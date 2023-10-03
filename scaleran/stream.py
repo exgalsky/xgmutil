@@ -12,6 +12,7 @@ class stream:
         self.nsub         = kwargs.get('nsub',1024**3)
 
     def generate(self,**kwargs):
+
         start = kwargs.get('start',0)
         size  = kwargs.get('size' ,1)
         dist  = kwargs.get('dist','normal')
@@ -30,12 +31,13 @@ class stream:
         seq = jnp.zeros(0,dtype=jnp.float32)
 
         for seqID in seqIDs:
-            subseq_start = max(seqID * self.nsub, start)
-            subseq_end   = min((seqID+1) * self.nsub -1,end)
-            subseq_size  = subseq_end - subseq_start + 1
-            subseq = rnd.normal(keys[seqID], dtype=jnp.float32, shape=(subseq_size,))
 
-            seq = jnp.concatenate((seq,subseq))
+            subseq_start = max(seqID * self.nsub, start) - seqID * self.nsub
+            subseq_end   = min((seqID+1) * self.nsub -1,end) - seqID * self.nsub
+
+            subseq = rnd.normal(keys[seqID], dtype=jnp.float32, shape=(self.nsub,))
+
+            seq = jnp.concatenate((seq,subseq[subseq_start:subseq_end+1]))
         
         return seq
 
