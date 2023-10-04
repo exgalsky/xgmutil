@@ -2,6 +2,7 @@ import jax.numpy as jnp
 import jax.random as rnd
 import jax
 import sys
+import os
 
 class stream:
     '''Stream'''
@@ -12,6 +13,10 @@ class stream:
         self.nsub         = kwargs.get('nsub',1024**3)
 
     def generate(self,**kwargs):
+
+        if self.force_no_gpu:
+            _JAX_PLATFORM_NAME = os.environ["JAX_PLATFORM_NAME"]
+            os.environ["JAX_PLATFORM_NAME"] = "cpu"
 
         start = kwargs.get('start',0)
         size  = kwargs.get('size' ,1)
@@ -39,6 +44,9 @@ class stream:
 
             seq = jnp.concatenate((seq,subseq[subseq_start:subseq_end+1]))
         
+        if self.force_no_gpu:
+            os.environ["JAX_PLATFORM_NAME"] = _JAX_PLATFORM_NAME
+
         return seq
 
 
