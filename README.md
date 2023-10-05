@@ -15,7 +15,7 @@ Example included here in [scripts/example.py](https://github.com/marcelo-alvarez
 import scaleran as sr
 
 # create stream
-stream = sr.stream.stream(
+stream = sr.Stream(
     seed = 13579,
     nsub = 2
 )

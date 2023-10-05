@@ -4,7 +4,7 @@ import jax
 import sys
 import os
 
-class stream:
+class Stream:
     '''Stream'''
     def __init__(self, **kwargs):
 
