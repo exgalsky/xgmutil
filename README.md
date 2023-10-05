@@ -9,7 +9,7 @@ Scalable random number generator
 ## Running
 Currently runs on perlmutter in the [xgsmenv](https://github.com/marcelo-alvarez/xgsmenv) enviroment.
 
-Example included here in [scripts/example.py](https://github.com/marcelo-alvarez/halosky/blob/master/scripts/example.py) will produce 20 random numbers from a normal distribution.
+Example included here in [scripts/example.py](https://github.com/marcelo-alvarez/scaleran/blob/master/scripts/example.py) will produce 20 random numbers from a normal distribution.
 
 ```
 import scaleran as sr
