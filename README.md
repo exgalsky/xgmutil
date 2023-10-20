@@ -1,21 +1,21 @@
-# scaleran
-Scalable random number generator
+# mutils
+Math utilities (e.g. FFT, random number generation, convolutions) used for extragalactic sky modeling. 
 
 ## Installation
-1. git clone https://github.com/xgskyhub/scaleran.git
-2. cd scaleran
+1. git clone https://github.com/xgskyhub/mutils.git
+2. cd mutils
 3. pip install .
 
 ## Running
 Currently runs on perlmutter in the [xgsmenv](https://github.com/xgskyhub/xgsmenv) enviroment.
 
-Example included here in [scripts/example.py](https://github.com/xgskyhub/scaleran/blob/master/scripts/example.py) will produce 20 random numbers from a normal distribution.
+Example included here in [scripts/example.py](https://github.com/xgskyhub/mutils/blob/master/scripts/example.py) will produce 20 random numbers from a normal distribution.
 
 ```
-import scaleran as sr
+import mutils as mu
 
 # create stream
-stream = sr.Stream(
+stream = mu.Stream(
     seed = 13579,
     nsub = 2
 )
