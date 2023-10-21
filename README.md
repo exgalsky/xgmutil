@@ -2,14 +2,14 @@
 Math utilities (e.g. FFT, random number generation, convolutions) used for extragalactic sky modeling. 
 
 ## Installation
-1. git clone https://github.com/xgskyhub/mutils.git
+1. git clone https://github.com/exgalsky/mutils.git
 2. cd mutils
 3. pip install .
 
 ## Running
-Currently runs on perlmutter in the [xgsmenv](https://github.com/xgskyhub/xgsmenv) enviroment.
+Currently runs on perlmutter in the [xgsmenv](https://github.com/exgalsky/xgsmenv) enviroment.
 
-Example included here in [scripts/example.py](https://github.com/xgskyhub/mutils/blob/master/scripts/example.py) will produce 20 random numbers from a normal distribution.
+Example included here in [scripts/example.py](https://github.com/exgalsky/mutils/blob/master/scripts/example.py) will produce 20 random numbers from a normal distribution.
 
 ```
 import mutils as mu
