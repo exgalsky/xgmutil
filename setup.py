@@ -1,10 +1,10 @@
 from setuptools import setup
-pname='scaleran'
+pname='xgmutil'
 setup(name=pname,
       version='0.1',
       description='Scalable random number generator using Jax',
-      url='http://github.com/marcelo-alvarez/scaleran',
-      author='Shamik Gosh and Marcelo Alvarez',
+      url='http://github.com/exgalsky/xgmutil',
+      author='exgalsky collaboration',
       license_files = ('LICENSE',),
-      packages=['scaleran'],
+      packages=[pname],
       zip_safe=False)
