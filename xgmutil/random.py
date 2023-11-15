@@ -1,5 +1,6 @@
 import jax.numpy as jnp 
 import jax.random as rdm 
+import jax
 
 import xgmutil.stream as stream
 
@@ -16,10 +17,15 @@ class RNG_component:
         self.component     = component_name
         self.component_id  = stream_id
         self.component_key = stream_key
-        self.force_no_gpu  = kwargs.get('force_no_gpu',False)
         self.nsub          = kwargs.get('nsub',1024**3)
 
-        self.stream = stream.Stream(force_no_gpu=self.force_no_gpu, seedkey=self.component_key, nsub=self.nsub)
+        _force_no_gpu      = kwargs.get('force_no_gpu',False)
+
+        self.device        = jax.default_backend()
+        if _force_no_gpu: self.device = 'cpu'
+
+
+        self.stream = stream.Stream(force_no_gpu=_force_no_gpu, seedkey=self.component_key, nsub=self.nsub)
 
     def generate(self, **kwargs):
         return self.stream.generate(**kwargs)
@@ -38,14 +44,15 @@ class RNG_manager:
         for key in predefined_components:
             self.registry[predefined_components[key]] = key  
 
-    def _register_component(self, component_name, component_type):
-        unassigned_idx = [i for i, val in enumerate(self.registry) if val == None]
+    def _register_component(self, component_name, component_type='extragalactic'):
+        unassigned_idx = jnp.array([i for i, val in enumerate(self.registry) if val == None])
         unassigned_stream = self.stream_no[unassigned_idx]
         self.registry[jnp.min(unassigned_stream[unassigned_stream >= 128])] = component_name.lower()
 
     def setup_stream(self, component_name, **kwargs):
-        if component_name in self.registry:
-            stream_no = self.registry.index(component_name)
-            return RNG_component(component_name, self.stream_id[stream_no], self.key_list[stream_no], **kwargs)
+        if not(component_name in self.registry): self._register_component(component_name)
+        stream_no = self.registry.index(component_name)
+        return RNG_component(component_name, self.stream_id[stream_no], self.key_list[stream_no], **kwargs)
+            
     
 
