@@ -10,6 +10,7 @@ class Stream:
         self.force_no_gpu = kwargs.get('force_no_gpu',False)
         self.seedkey      = kwargs.get('seedkey', rnd.PRNGKey(123456789))
         self.nsub         = kwargs.get('nsub',1024**3)
+        self.dtype        = kwargs.get('dtype', jnp.float32)
 
     def generate(self,**kwargs):
 
@@ -20,10 +21,9 @@ class Stream:
         start = kwargs.get('start',0)
         size  = kwargs.get('size' ,1)
         dist  = kwargs.get('dist','normal')
-        dtype = kwargs.get('dtype', jnp.float32)
         mc    = kwargs.get('mc', 0)
 
-        if dtype in [jnp.float64, jnp.complex128, jnp.int64]:
+        if self.dtype in [jnp.float64, jnp.complex128]:
             _JAX_X64_INITIAL_STATE = jax.config.read('jax_enable_x64')
             jax.config.update('jax_enable_x64', True)
 
@@ -46,14 +46,14 @@ class Stream:
             subseq_end   = min((seqID+1) * self.nsub -1,end) - seqID * self.nsub
 
             if dist == 'normal':
-                subseq = rnd.normal(keys[seqID], dtype=dtype, shape=(self.nsub,))
+                subseq = rnd.normal(keys[seqID], dtype=self.dtype, shape=(self.nsub,))
 
             seq = jnp.concatenate((seq,subseq[subseq_start:subseq_end+1]))
         
         if self.force_no_gpu:
             jax.default_device(_JAX_PLATFORM_NAME)
 
-        if dtype in [jnp.float64, jnp.complex128, jnp.int64]:
+        if self.dtype in [jnp.float64, jnp.complex128, jnp.int64]:
             jax.config.update('jax_enable_x64', _JAX_X64_INITIAL_STATE)
 
         return seq

@@ -18,16 +18,22 @@ class RNG_component:
         self.component_id  = stream_id
         self.component_key = stream_key
         self.nsub          = kwargs.get('nsub',1024**3)
-
+        self.dtype         = kwargs.get('dtype',jnp.float32)
         _force_no_gpu      = kwargs.get('force_no_gpu',False)
 
         self.device        = jax.default_backend()
         if _force_no_gpu: self.device = 'cpu'
 
+        self._dtype_stream = self.dtype
+        if self.dtype == jnp.float32: 
+            self._dtype_stream = jnp.float64
+        elif self.dtype == jnp.complex64: 
+            self._dtype_stream = jnp.complex128
 
-        self.stream = stream.Stream(force_no_gpu=_force_no_gpu, seedkey=self.component_key, nsub=self.nsub)
+        self.stream = stream.Stream(force_no_gpu=_force_no_gpu, seedkey=self.component_key, nsub=self.nsub, dtype=self._dtype_stream)
 
     def generate(self, **kwargs):
+        if self.dtype != self._dtype_stream: return (self.stream.generate(**kwargs)).astype(self.dtype)
         return self.stream.generate(**kwargs)
 
 class RNG_manager:
