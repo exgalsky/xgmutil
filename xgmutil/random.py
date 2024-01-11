@@ -37,14 +37,16 @@ class RNG_component:
         return self.stream.generate(**kwargs)
 
 class RNG_manager:
-    def __init__(self, seed = 57885161, n_components = 512):
+    def __init__(self, seed = 57885161):
     # Mersenne exponents no 48. Ref: https://oeis.org/A000043 used as seed
     # Do we hard code this here, or have it defined elsewhere and read here?
+        self.seed = seed
+        self.n_components = 512
 
-        self.master_key  = rdm.PRNGKey(seed)
-        self.key_list    = rdm.split(self.master_key, num=n_components)
-        self.stream_no   = jnp.arange(0, n_components, dtype=jnp.int16)
-        self.stream_id   = [f"{seed}-{seq_no:{0}>3}" for seq_no in self.stream_no]
+        self.master_key  = rdm.PRNGKey(self.seed)
+        self.key_list    = rdm.split(self.master_key, num=self.n_components)
+        self.stream_no   = jnp.arange(0, self.n_components, dtype=jnp.int16)
+        self.stream_id   = [f"{self.seed}-{seq_no:{0}>3}" for seq_no in self.stream_no]
         self.registry    = [None for _ in self.stream_no]
 
         for key in predefined_components:
