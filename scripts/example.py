@@ -1,7 +1,7 @@
-import scaleran as sr
+import xgmutil as mu
 
 # create stream
-stream = sr.Stream(
+stream = mu.Stream(
     seed = 13579,
     nsub = 2
 )
