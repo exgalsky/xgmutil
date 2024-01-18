@@ -8,9 +8,16 @@ class Stream:
     def __init__(self, **kwargs):
 
         self.force_no_gpu = kwargs.get('force_no_gpu',False)
-        self.seedkey      = kwargs.get('seedkey', rnd.PRNGKey(123456789))
+        self._seedkey     = kwargs.get('seedkey', rnd.PRNGKey(123456789))
+        if isinstance(self._seedkey, int):
+            self._seedkey = rnd.PRNGKey(self._seedkey)
+        self._PRNGkey      = self._seedkey
         self.nsub         = kwargs.get('nsub',1024**3)
         self.dtype        = kwargs.get('dtype', jnp.float32)
+
+    def set_seedkey(self, mc):
+        if isinstance(mc, int):
+            self._PRNGkey = rnd.fold_in(self._seedkey, mc)
 
     def generate(self,**kwargs):
 
@@ -21,13 +28,10 @@ class Stream:
         start = kwargs.get('start',0)
         size  = kwargs.get('size' ,1)
         dist  = kwargs.get('dist','normal')
-        mc    = kwargs.get('mc', 0)
 
         if self.dtype in [jnp.float64, jnp.complex128]:
             _JAX_X64_INITIAL_STATE = jax.config.read('jax_enable_x64')
             jax.config.update('jax_enable_x64', True)
-
-        key4mc = rnd.fold_in(self.seedkey, mc)
 
         end = start + size - 1
 
@@ -36,7 +40,7 @@ class Stream:
 
         seqIDs = jnp.arange(start_seqID, end_seqID+1)
 
-        keys = jax.vmap(rnd.fold_in, in_axes=(None, 0), out_axes=0)(key4mc, seqIDs)
+        keys = jax.vmap(rnd.fold_in, in_axes=(None, 0), out_axes=0)(self._PRNGkey, seqIDs)
 
         seq = jnp.zeros(0,dtype=jnp.float32)
 

@@ -33,6 +33,9 @@ class RNG_component:
         self.stream = stream.Stream(force_no_gpu=_force_no_gpu, seedkey=self.component_key, nsub=self.nsub, dtype=self._dtype_stream)
 
     def generate(self, **kwargs):
+        mc  = kwargs.get('mc', 0)
+        self.stream.set_seedkey(mc)
+
         if self.dtype != self._dtype_stream: return (self.stream.generate(**kwargs)).astype(self.dtype)
         return self.stream.generate(**kwargs)
 

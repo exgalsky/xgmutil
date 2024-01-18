@@ -1,5 +1,24 @@
 import xgmutil as mu 
 import jax.numpy as jnp
+import jax
+
+cuda_build = False
+
+# Do jax.distributed.initialize if jaxlib is built with cuda
+if cuda_build:
+    jax.distributed.initialize()
+
+# create stream
+stream = mu.Stream(
+    seedkey = 13579,
+    nsub    = 2
+)
+
+seq = stream.generate(start=5,size=20)
+
+print('seq',seq)
+print('seq shape:',seq.shape)
+print('seq mean:',seq.mean())
 
 RNG_manager = mu.RNG_manager(seed = 13579)
 print(f'master seed      : {RNG_manager.seed}')
