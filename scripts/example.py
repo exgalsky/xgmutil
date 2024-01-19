@@ -12,6 +12,7 @@ if cuda_build:
 stream = mu.Stream(
     seedkey = 13579,
     nsub    = 2
+
 )
 
 seq = stream.generate(start=5,size=20)
