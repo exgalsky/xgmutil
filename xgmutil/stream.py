@@ -29,9 +29,9 @@ class Stream:
         size  = kwargs.get('size' ,1)
         dist  = kwargs.get('dist','normal')
 
-        if self.dtype in [jnp.float64, jnp.complex128]:
-            _JAX_X64_INITIAL_STATE = jax.config.read('jax_enable_x64')
-            jax.config.update('jax_enable_x64', True)
+        # if self.dtype in [jnp.float64, jnp.complex128]:
+        _JAX_X64_INITIAL_STATE = jax.config.read('jax_enable_x64')
+        jax.config.update('jax_enable_x64', True)
 
         end = start + size - 1
 
@@ -42,7 +42,7 @@ class Stream:
 
         keys = jax.vmap(rnd.fold_in, in_axes=(None, 0), out_axes=0)(self._PRNGkey, seqIDs)
 
-        seq = jnp.zeros(0,dtype=jnp.float32)
+        seq = jnp.zeros(0,dtype=self.dtype)
 
         for seqID in seqIDs:
 
@@ -57,8 +57,8 @@ class Stream:
         if self.force_no_gpu:
             jax.default_device(_JAX_PLATFORM_NAME)
 
-        if self.dtype in [jnp.float64, jnp.complex128, jnp.int64]:
-            jax.config.update('jax_enable_x64', _JAX_X64_INITIAL_STATE)
+        # if self.dtype in [jnp.float64, jnp.complex128, jnp.int64]:
+        jax.config.update('jax_enable_x64', _JAX_X64_INITIAL_STATE)
 
         return seq
 
